@@ -2,21 +2,28 @@ package main
 
 import (
 	"bufio"
+	"io"
 	"os"
 	"strconv"
 	"strings"
 )
 
 func main() {
+	solve(os.Stdin, os.Stdout)
+}
 
+func solve(in io.Reader, out io.Writer) {
+	NewReader(in)
+
+	NewWriter(out)
 }
 
 type reader struct {
 	s *bufio.Scanner
 }
 
-func NewReader() *reader {
-	s := bufio.NewScanner(os.Stdin)
+func NewReader(r io.Reader) *reader {
+	s := bufio.NewScanner(r)
 	s.Buffer(make([]byte, 1e8), 1e8)
 	return &reader{
 		s: s,
@@ -43,9 +50,9 @@ type writer struct {
 	w *bufio.Writer
 }
 
-func NewWriter() *writer {
+func NewWriter(w io.Writer) *writer {
 	return &writer{
-		w: bufio.NewWriter(os.Stdout),
+		w: bufio.NewWriter(w),
 	}
 }
 
