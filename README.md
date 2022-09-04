@@ -13,7 +13,12 @@ make test
 # ./shell/test.sh contests/atcoder/abc267/a
 ```
 
-解き終わったら、テストデータをmain.goのファイルをcontests配下に移動する
+現在解いている問題の回答を提出する
+```bash
+make solve
+```
+
+解き終わったら、テストデータをmain.goのファイルをcontests配下に移動し、コミットする
 ```bash
 make save
 ```
@@ -28,3 +33,8 @@ make new-b
 ```bash
 make current
 ```
+
+TODO:
+- [ ] template/main_test.go(.tmpl)をつくる。go generateしたい。
+- [ ] template/structure/queue.goにテスト作る
+- [ ] ランダムテストの生成
