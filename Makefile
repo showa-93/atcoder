@@ -7,6 +7,9 @@ test:
 new-%:
 	@./shell/new.sh $*
 
+solve:
+	@./shell/solve.sh
+
 save:
 	@./shell/save.sh
 

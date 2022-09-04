@@ -1,20 +1,9 @@
 #!/bin/bash
+. shell/contests_function.sh
 
-site=`cat .current/site 2> /dev/null`
-url=`cat .current/url 2> /dev/null`
-title=`cat .current/title 2> /dev/null`
-problem=`cat .current/problem 2> /dev/null`
+problem_url=`get_problem_url`
 
-if [ -z $site -o -z $url -o -z $title -o -z $problem ]; then
-  echo コンテストが開始されていません。init.shでコンテストを開始してください。
-  exit 1
-fi
-
-if [ $site = atcoder ]; then
-  problem_url="${url}/tasks/${title}_${problem}"
-fi
-
-problem_directory="contests/${site}/${title}/${problem}"
+problem_directory=`get_problem_directory`
 rm -rf $problem_directory
 mkdir -p $problem_directory
 

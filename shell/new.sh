@@ -1,23 +1,14 @@
 #!/bin/bash
 # 現在のコンテストをもとにテストケースを初期化する
 # main.goのコピー、テストデータの取得を行う
+. shell/contests_function.sh
+
 if [ $# != 1 ]; then
   echo 開始するコンテストの問題を指定してください
   exit 1
 fi
 
-site=`cat .current/site 2> /dev/null`
-url=`cat .current/url 2> /dev/null`
-title=`cat .current/title 2> /dev/null`
-
-if [ -z $site -o -z $url -o -z $title ]; then
-  echo コンテストが開始されていません。init.shでコンテストを開始してください。
-  exit 1
-fi
-
-if [ $site = atcoder ]; then
-  problem_url="${url}/tasks/${title}_${1}"
-fi
+problem_url=`get_problem_url ${1}`
 
 if [ -d testdata -o -e main.go ]; then
   # 間違ってさよならしないようにバックアップを取得する
