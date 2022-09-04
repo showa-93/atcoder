@@ -11,5 +11,8 @@ cp main.go ${problem_directory}/main.go
 cp -r testdata ${problem_directory}/
 echo ${problem_url} > ${problem_directory}/README.md
 
+git add ${problem_directory}
+git commit -m "`get_current site` `get_current title` `get_current problem`"
+
 rm main.go
 rm -rf testdata
