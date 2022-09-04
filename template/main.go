@@ -7,6 +7,13 @@ import (
 	"strconv"
 )
 
+const BufferSize int = 1e9
+
+const (
+	MinInt = -1 << (64 - 1)
+	MaxInt = 1<<(64-1) - 1
+)
+
 func main() {
 	solve(os.Stdin, os.Stdout)
 }
@@ -23,7 +30,7 @@ type reader struct {
 
 func NewReader(r io.Reader) *reader {
 	s := bufio.NewScanner(r)
-	s.Buffer(make([]byte, 1e8), 1e8)
+	s.Buffer(make([]byte, BufferSize), BufferSize)
 	s.Split(bufio.ScanWords)
 	return &reader{
 		s: s,
