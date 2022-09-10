@@ -3,8 +3,14 @@
 if [ $# = 0 ]; then
   echo -n 開始するコンテストのURLを指定してください:
   read url
+  echo -n 開始するコンテストの問題を指定してください:
+  read problem
+elif [ $# = 1 ]; then
+  url=$1
+  problem=a
 else
   url=$1
+  problem=$2
 fi
 
 readonly URL_ATCODER='^https://atcoder\.jp/contests/([a-z0-9]*)$'
@@ -25,4 +31,4 @@ echo -n $url > .current/url
 echo -n $contest_site > .current/site
 echo -n $contest_title > .current/title
 
-bash shell/new.sh a
+bash shell/new.sh $problem
