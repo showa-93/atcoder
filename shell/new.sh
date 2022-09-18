@@ -15,6 +15,7 @@ if [ -d testdata -o -e main.go ]; then
   backup=.backup/program/`date "+%y%m%d%H%M%S"`
   mkdir -p $backup
   cp main.go ${backup}/main.go
+  cp main_test.go ${backup}/main_test.go
   cp -r testdata ${backup}/testdata
   rm -rf testdata
   rm -f .current/problem
@@ -23,3 +24,4 @@ fi
 oj d -d testdata -f "case%i/%e" $problem_url
 cp template/main.go main.go
 echo -n $1 > .current/problem
+go run gen/solve/main.go
