@@ -44,7 +44,7 @@ func solve(in io.Reader, out io.Writer) {
 			if k <= 0 {
 				break
 			}
-			i := que.Remove(que.Back()).(int)
+			i := que.Remove(que.Front()).(int)
 			if a[i]-m < 0 {
 				k -= a[i]
 				a[i] = 0
