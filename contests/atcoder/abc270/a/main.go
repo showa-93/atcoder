@@ -23,16 +23,9 @@ func solve(in io.Reader, out io.Writer) {
 	w := NewWriter(out)
 	defer w.Flush()
 	a, b := r.ReadInt(), r.ReadInt()
-	ans := 0
 	c := a | b
-	bb := strconv.FormatInt(int64(c), 2)
-	for i, b := range bb {
-		if b == '1' {
-			ans += Pow(2, len(bb)-i-1)
-		}
-	}
 
-	w.WriteInt(ans)
+	w.WriteInt(c)
 }
 
 type reader struct {
