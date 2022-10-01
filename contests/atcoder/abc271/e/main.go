@@ -23,40 +23,34 @@ func solve(in io.Reader, out io.Writer) {
 	w := NewWriter(out)
 	defer w.Flush()
 	n, m, k := r.ReadInt(), r.ReadInt(), r.ReadInt()
-	abc := make([][3]int, m)
+	a, b, c := make([]int, m), make([]int, m), make([]int, m)
 	for i := 0; i < m; i++ {
-		abc[i] = [3]int{r.ReadInt(), r.ReadInt(), r.ReadInt()}
+		a[i] = r.ReadInt() - 1
+		b[i] = r.ReadInt() - 1
+		c[i] = r.ReadInt()
 	}
-	e := r.ReadIntLine(k)
 
-	min := MaxInt
-	var f func(e []int, nn, v int)
-	f = func(e []int, nn, v int) {
-		if min < v {
-			return
-		}
-		if nn == 1 {
-			min = Min(min, v)
-			return
-		}
-		p := make([]int, m)
-		for i := len(e) - 1; i >= 0; i-- {
-			if p[e[i]-1] == 1 {
-				continue
-			}
-			p[e[i]-1] = 1
-			a := abc[e[i]-1]
-			if a[1] == nn {
-				f(e[:i], a[0], v+a[2])
-			}
+	dp := make([]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = MaxInt
+	}
+	// 最初の街１を０で初期化
+	// こうすることで開始位置と一致する道から始まる
+	dp[0] = 0
+
+	for i := 0; i < k; i++ {
+		e := r.ReadInt() - 1
+		// すでに訪れた場合とeの経路とそれまでのコストの和と比較して
+		// 小さい方をセットする
+		if dp[a[e]] < MaxInt && dp[a[e]]+c[e] < dp[b[e]] {
+			dp[b[e]] = dp[a[e]] + c[e]
 		}
 	}
 
-	f(e, n, 0)
-	if min == MaxInt {
-		w.WriteInt(-1)
+	if dp[n-1] < MaxInt {
+		w.WriteInt(dp[n-1])
 	} else {
-		w.WriteInt(min)
+		w.WriteInt(-1)
 	}
 }
 
