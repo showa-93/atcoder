@@ -18,7 +18,7 @@ func (m Mint) Mod() Mint {
 }
 
 func (m Mint) Inv() Mint {
-	return m.Pow(Mint(0).Sub(2))
+	return m.Pow(Mint(modValue - 2))
 }
 
 func (m Mint) Add(a Mint) Mint {
