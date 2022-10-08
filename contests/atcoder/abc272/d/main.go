@@ -26,15 +26,6 @@ func solve(in io.Reader, out io.Writer) {
 	defer w.Flush()
 	n, m := r.ReadInt(), r.ReadInt()
 	t := make([][]int, n)
-	print := func() {
-		for i := 0; i < n; i++ {
-			w.w.WriteString(strconv.Itoa(t[i][0]))
-			for j := 1; j < n; j++ {
-				w.w.WriteString(" " + strconv.Itoa(t[i][j]))
-			}
-			w.w.WriteRune('\n')
-		}
-	}
 	for i := 0; i < n; i++ {
 		t[i] = make([]int, n)
 		for j := 0; j < n; j++ {
@@ -42,45 +33,44 @@ func solve(in io.Reader, out io.Writer) {
 		}
 	}
 	t[0][0] = 0
+	sm := make(map[int]int)
+	mm := int(math.Sqrt(float64(m)))
 
-	x, y := func() (int, int) {
-		m2 := int(math.Sqrt(float64(m)))
-		for i := m2; m2 > 0; i-- {
-			for j := 0; j <= i; j++ {
-				if m == i*i+j*j {
-					return i, j
-				}
-			}
+	for i := 0; i <= m; i++ {
+		sm[i] = -1
+		v := int(math.Sqrt(float64(i)))
+		if i == v*v {
+			sm[i] = v
 		}
-		return -1, -1
-	}()
-	if x < 0 {
-		print()
-		return
 	}
 
 	que := list.New()
-	que.PushBack([2]int{0, 0})
+	que.PushBack([2]int{1, 1})
 
 	for que.Len() > 0 {
-		v := que.Remove(que.Front()).([2]int)
-		for i := 0; i < 2; i++ {
-			for _, i := range [][2]int{{1, 1}, {-1, 1}, {1, -1}, {-1, -1}} {
-				xx := v[0] + i[0]*x
-				yy := v[1] + i[1]*y
-				if n > xx && xx >= 0 && n > yy && yy >= 0 && t[xx][yy] < 0 {
-					t[xx][yy] = t[v[0]][v[1]] + 1
-					que.PushBack([2]int{xx, yy})
+		p := que.Remove(que.Front()).([2]int)
+		for k := 1; k <= mm+p[0] && k <= n; k++ {
+			ll := m - (k-p[0])*(k-p[0])
+			if v, ok := sm[ll]; ok && v >= 0 {
+				if l := p[1] + v; n >= l && l > 0 && t[k-1][l-1] < 0 {
+					t[k-1][l-1] = t[p[0]-1][p[1]-1] + 1
+					que.PushBack([2]int{k, l})
+				}
+				if l := p[1] - v; n >= l && l > 0 && t[k-1][l-1] < 0 {
+					t[k-1][l-1] = t[p[0]-1][p[1]-1] + 1
+					que.PushBack([2]int{k, l})
 				}
 			}
-			if x == y {
-				break
-			}
-			x, y = y, x
 		}
-		x, y = y, x
 	}
-	print()
+
+	for i := 0; i < n; i++ {
+		w.w.WriteString(strconv.Itoa(t[i][0]))
+		for j := 1; j < n; j++ {
+			w.w.WriteString(" " + strconv.Itoa(t[i][j]))
+		}
+		w.w.WriteRune('\n')
+	}
 }
 
 type reader struct {
