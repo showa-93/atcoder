@@ -15,6 +15,7 @@ rm -rf $problem_directory
 mkdir -p $problem_directory
 
 cp main.go ${problem_directory}/main.go
+cp main_test.go ${problem_directory}/main_test.go
 cp -r testdata ${problem_directory}/
 echo ${problem_url} > ${problem_directory}/README.md
 
