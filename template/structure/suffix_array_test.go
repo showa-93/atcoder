@@ -41,8 +41,10 @@ func TestSAIS(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got := SAIS(test.input)
-		assert.Equal(t, test.want, got)
+		t.Run(test.input, func(t *testing.T) {
+			got := NewSAIS([]byte(test.input))
+			assert.Equal(t, test.want, got.sa)
+		})
 	}
 }
 
@@ -79,21 +81,38 @@ func TestBucketSort(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got := SAIS(test.input)
-		assert.Equal(t, test.want, got)
+		got := BucketSort(test.input)
+		assert.Equal(t, test.want, got[1:])
 	}
 }
 
+// 検証結果
+// メモリアロケート大量に発生しているが、それでもバケットソートよりは倍以上の性能はでている
+// しかし、標準ライブラリと比べると半分以下の性能しか出ていない
+// あと、標準ライブラリはメモリの使い回しがテクニカルすぎる
+// TODO:仕組みはなんとなくわかったので、いつか作り直す。いつか
+//
+// > go test -benchmem -run=^$ -benchtime 2s -bench . github.com/showa-93/atcoder/template/structure
+// goos: linux
+// goarch: amd64
+// pkg: github.com/showa-93/atcoder/template/structure
+// cpu: Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz
+// BenchmarkSAIS-8                       22         104793993 ns/op        57184818 B/op     325552 allocs/op
+// BenchmarkBucketSort-8                  8         265481594 ns/op        115157676 B/op     24324 allocs/op
+// BenchmarkIndex-8                      49          43160793 ns/op         4005971 B/op          2 allocs/op
+// PASS
+// ok      github.com/showa-93/atcoder/template/structure  7.019s
 func BenchmarkSAIS(b *testing.B) {
 	b.StopTimer()
 	r := rand.New(rand.NewSource(0x5a77a1))
 	data := make([]byte, 1e6)
 	for i := range data {
-		data[i] = byte(r.Intn(256)%26 + 97)
+		data[i] = byte(r.Intn(255) + 1)
 	}
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		SAIS(string(data))
+		// NewSAIS([]byte("aababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcab"))
+		NewSAIS(data)
 	}
 }
 
@@ -102,11 +121,12 @@ func BenchmarkBucketSort(b *testing.B) {
 	r := rand.New(rand.NewSource(0x5a77a1))
 	data := make([]byte, 1e6)
 	for i := range data {
-		data[i] = byte(r.Intn(256)%26 + 97)
+		data[i] = byte(r.Intn(255) + 1)
 	}
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		BucketSort(string(data))
+		// BucketSort(string("aababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcab"))
+		BucketSort(string((data)))
 	}
 }
 
@@ -115,10 +135,11 @@ func BenchmarkIndex(b *testing.B) {
 	r := rand.New(rand.NewSource(0x5a77a1))
 	data := make([]byte, 1e6)
 	for i := range data {
-		data[i] = byte(r.Intn(256)%26 + 97)
+		data[i] = byte(r.Intn(255) + 1)
 	}
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
+		// suffixarray.New([]byte("aababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcabaababcabddabcab"))
 		suffixarray.New(data)
 	}
 }
