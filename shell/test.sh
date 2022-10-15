@@ -29,4 +29,4 @@ do
   shift
 done
 
-(cd $base_dir; oj t -D -c "go run main.go" -d testdata -f "%s/%e"${measurement_error})
+(cd $base_dir; oj t -S -D -c "go run main.go" -d testdata -f "%s/%e"${measurement_error})
