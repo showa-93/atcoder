@@ -1,4 +1,8 @@
 #!/bin/bash
 . shell/contests_function.sh
 
-oj s `get_problem_url` main.go
+. shell/test.sh
+
+if [ $? = 0 ]; then
+  oj s `get_problem_url` main.go
+fi
