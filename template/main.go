@@ -90,6 +90,29 @@ func (w *writer) WriteInt(v int) {
 	w.w.WriteRune('\n')
 }
 
+func new2dInt(m, n int) [][]int {
+	table := make([][]int, m)
+	for i := 0; i < m; i++ {
+		table[i] = make([]int, n)
+	}
+
+	return table
+}
+
+func reset2dInt(table [][]int) {
+	for i := 0; i < len(table); i++ {
+		for j := 0; j < len(table[i]); j++ {
+			table[i][j] = 0
+		}
+	}
+}
+
+func copy2dInt(dst, src [][]int) {
+	for i := 0; i < len(src); i++ {
+		copy(dst[i], src[i])
+	}
+}
+
 func Max(x, y int) int {
 	if x > y {
 		return x
