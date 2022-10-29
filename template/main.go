@@ -90,19 +90,37 @@ func (w *writer) WriteInt(v int) {
 	w.w.WriteRune('\n')
 }
 
-func new2dInt(m, n int) [][]int {
+func new1dInt(n, v int) []int {
+	a := make([]int, n)
+	for i := 0; i < n; i++ {
+		a[i] = v
+	}
+
+	return a
+}
+
+func reset1dInt(a []int, v int) {
+	for i := 0; i < len(a); i++ {
+		a[i] = v
+	}
+}
+
+func new2dInt(m, n, v int) [][]int {
 	table := make([][]int, m)
 	for i := 0; i < m; i++ {
 		table[i] = make([]int, n)
+		for j := 0; j < n; j++ {
+			table[i][j] = v
+		}
 	}
 
 	return table
 }
 
-func reset2dInt(table [][]int) {
+func reset2dInt(table [][]int, v int) {
 	for i := 0; i < len(table); i++ {
 		for j := 0; j < len(table[i]); j++ {
-			table[i][j] = 0
+			table[i][j] = v
 		}
 	}
 }
