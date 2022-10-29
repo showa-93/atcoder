@@ -17,7 +17,7 @@ import (
 {{ range $i, $num := . -}}
 {{ printf "" }}
 func TestSolve_Case{{ $num }}(t *testing.T) {
-	in, err := os.Open("testdata/case1/in")
+	in, err := os.Open("testdata/case{{ $num }}/in")
 	if err != nil {
 		t.Fatal(err)
 	}
