@@ -1,59 +1,102 @@
 package algorithm
 
-import "testing"
+import (
+	"testing"
 
-func TestMint_Add(t *testing.T) {
-	if Mint(1).Add(2) != Mint(3) {
-		t.Fail()
+	"github.com/stretchr/testify/assert"
+)
+
+func TestModAdd(t *testing.T) {
+	tests := map[string]struct {
+		a, b int
+		want int
+	}{
+		"1 + 2 ≡ 3":           {1, 2, 3},
+		"1000000006 + 2 ≡ 1":  {1000000006, 2, 1},
+		"-2 + 1 ≡ 1000000006": {-2, 1, 1000000006},
 	}
-	if Mint(1000000006).Add(2) != Mint(1) {
-		t.Fail()
-	}
-	if Mint(-2).Add(1) != Mint(-1) {
-		t.Fail()
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			assert.Equal(t, tt.want, ModAdd(tt.a, tt.b))
+		})
 	}
 }
 
-func TestMint_Sub(t *testing.T) {
-	if v := Mint(3).Sub(1); v != Mint(2) {
-		t.Error(v)
+func TestModSub(t *testing.T) {
+	tests := map[string]struct {
+		a, b int
+		want int
+	}{
+		"3 - 2 ≡ 1":           {3, 2, 1},
+		"1000000009 - 1 ≡ 1":  {1000000009, 1, 1},
+		"-2 - 1 ≡ 1000000004": {-2, 1, 1000000004},
 	}
-	if v := Mint(1).Sub(2); v != Mint(1000000006) {
-		t.Error(v)
-	}
-	if v := Mint(-1).Sub(2); v != Mint(1000000004) {
-		t.Error(v)
-	}
-	if v := Mint(0).Sub(2); v != Mint(1000000005) {
-		t.Error(v)
-	}
-}
-
-func TestMint_Mul(t *testing.T) {
-	if v := Mint(3).Mul(2); v != Mint(6) {
-		t.Error(v)
-	}
-	if v := Mint(500000004).Mul(2); v != Mint(1) {
-		t.Error(v)
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			assert.Equal(t, tt.want, ModSub(tt.a, tt.b))
+		})
 	}
 }
 
-func TestMint_Pow(t *testing.T) {
-	if v := Mint(3).Pow(6); v != Mint(729) {
-		t.Error(v)
+func TestModMul(t *testing.T) {
+	tests := map[string]struct {
+		a, b int
+		want int
+	}{
+		"3 * 2 ≡ 6":           {3, 2, 6},
+		"500000004 * 2 ≡ 1":   {500000004, 2, 1},
+		"3 * -2 ≡ 1000000001": {3, -2, 1000000001},
 	}
-	modValue = 100
-	defer func() { modValue = Mint(mod1000000007) }()
-	if v := Mint(3).Pow(19); v != Mint(67) {
-		t.Error(v)
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			assert.Equal(t, tt.want, ModMul(tt.a, tt.b))
+		})
 	}
 }
 
-func TestMint_Div(t *testing.T) {
-	if v := Mint(10).Div(2); v != Mint(5) {
-		t.Error(v)
+func TestModPow(t *testing.T) {
+	tests := map[string]struct {
+		a, b int
+		want int
+	}{
+		"3 ^ 6 ≡ 729":        {3, 6, 729},
+		"22 ^ 7 ≡ 494357874": {22, 7, 494357874},
 	}
-	if v := Mint(9).Div(2); v != Mint(500000008) {
-		t.Error(v)
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			assert.Equal(t, tt.want, ModPow(tt.a, tt.b))
+			t.Error()
+		})
+	}
+}
+
+func TestModInv(t *testing.T) {
+	tests := map[string]struct {
+		a    int
+		want int
+	}{
+		"12345678900000 ^ -1": {12345678900000, 237800188},
+		"213134656876 ^ -1":   {213134656876, 50269932},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			assert.Equal(t, tt.want, ModInv(tt.a))
+		})
+	}
+}
+
+func TestModDiv(t *testing.T) {
+	tests := map[string]struct {
+		a, b int
+		want int
+	}{
+		"10 / 2 ≡ 5":                          {10, 2, 5},
+		"9 / 2 ≡ 500000008":                   {9, 2, 500000008},
+		"12345678900000 / 100000 ≡ 123456789": {12345678900000, 100000, 123456789},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			assert.Equal(t, tt.want, ModDiv(tt.a, tt.b))
+		})
 	}
 }

@@ -1,58 +1,68 @@
 package algorithm
 
+import "fmt"
+
 const (
 	mod998244353  int = 998244353
 	mod1000000007 int = 1000000007
 )
 
-var modValue Mint = Mint(mod1000000007)
-
 func SetModValue(v int) {
-	modValue = Mint(v)
+	mod = v
 }
 
-type Mint int
+var mod int = mod1000000007
 
-func (m Mint) Mod() Mint {
-	return m % modValue
-}
-
-func (m Mint) Inv() Mint {
-	return m.Pow(Mint(modValue - 2))
-}
-
-func (m Mint) Add(a Mint) Mint {
-	return Mint(m + a).Mod()
-}
-
-func (m Mint) Sub(a Mint) Mint {
-	v := Mint(m - a).Mod()
-	if v < 0 {
-		v += modValue
+func Mod(a int) int {
+	a %= mod
+	if a < 0 {
+		a += mod
 	}
-
-	return v
+	return a
 }
 
-func (m Mint) Mul(a Mint) Mint {
-	return Mint(m * a).Mod()
+func ModAdd(a, b int) int {
+	return Mod(a + b)
 }
 
-func (m Mint) Div(a Mint) Mint {
-	return m.Mul(a.Inv())
+func ModSub(a, b int) int {
+	return ModAdd(a, -b)
 }
 
-func (m Mint) Pow(n Mint) Mint {
-	var p Mint = 1
-	base := m
-	for n > 0 {
-		// nの2進数表記ごとに1のくらいの時だけかける
-		if n&1 == 1 {
-			p = p.Mul(base)
+func ModMul(a, b int) int {
+	return Mod(a * b)
+}
+
+func ModPow(a, b int) int {
+	p := 1
+	for b > 0 {
+		fmt.Printf("%b %v\n", b, b&1)
+		if b&1 == 1 {
+			p = ModMul(p, a)
 		}
-		base = base.Mul(base)
-		n >>= 1
+		a = ModMul(a, a)
+		b >>= 1
 	}
 
 	return p
+}
+
+// 非再帰拡張Euclidの互除法
+func ModInv(a int) int {
+	b := mod
+	x, y := 1, 0
+
+	for b != 0 {
+		t := a / b
+		a -= t * b
+		a, b = b, a
+		x -= t * y
+		x, y = y, x
+	}
+
+	return Mod(x)
+}
+
+func ModDiv(a, b int) int {
+	return ModMul(Mod(a), ModInv(b))
 }

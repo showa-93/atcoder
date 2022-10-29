@@ -38,3 +38,6 @@ TODO:
 - [x] template/main_test.go(.tmpl)をつくる。go generateしたい。
 - [ ] template/structure/queue.goにテスト作る
 - [ ] ランダムテストの生成
+- [x] modのライブラリを改修する
+- [ ] ベクトル系ライブラリ。scrapboxにベースはあるはず
+- [ ] suffix arrayを実装しなおす
