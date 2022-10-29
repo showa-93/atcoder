@@ -24,4 +24,4 @@ fi
 oj d -d testdata -f "case%i/%e" $problem_url
 cp template/main.go main.go
 echo -n $1 > .current/problem
-go run gen/solve_test/main.go
+go run cmd/solve_test/main.go
