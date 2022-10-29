@@ -1,7 +1,5 @@
 package algorithm
 
-import "fmt"
-
 const (
 	mod998244353  int = 998244353
 	mod1000000007 int = 1000000007
@@ -36,7 +34,6 @@ func ModMul(a, b int) int {
 func ModPow(a, b int) int {
 	p := 1
 	for b > 0 {
-		fmt.Printf("%b %v\n", b, b&1)
 		if b&1 == 1 {
 			p = ModMul(p, a)
 		}
