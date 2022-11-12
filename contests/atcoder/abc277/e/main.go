@@ -23,95 +23,58 @@ func solve(in io.Reader, out io.Writer) {
 	r := NewReader(in)
 	w := NewWriter(out)
 	defer w.Flush()
-
-	type node struct {
-		vertex int
-		s      bool
-		edges  map[int]int
-	}
-	nodes := make(map[int]*node)
+	nodes := make(map[int][][2]int)
 	n, m, k := r.ReadInt(), r.ReadInt(), r.ReadInt()
 	for i := 0; i < m; i++ {
-		u, v, a := r.ReadInt(), r.ReadInt(), r.ReadInt()+1
-		{
-			n, ok := nodes[u]
-			if !ok {
-				nodes[u] = &node{
-					vertex: u,
-					edges:  make(map[int]int),
-				}
-				n = nodes[u]
-			}
-			n.edges[v] = n.edges[v] | a
+		u, v, a := r.ReadInt(), r.ReadInt(), r.ReadInt()
+		// 無効な世界線を+nで表現する
+		if a == 0 {
+			u += n
+			v += n
 		}
-		{
-			n, ok := nodes[v]
-			if !ok {
-				nodes[v] = &node{
-					vertex: v,
-					edges:  make(map[int]int),
-				}
-				n = nodes[v]
-			}
-			n.edges[u] = n.edges[u] | a
-		}
+		nodes[u] = append(nodes[u], [2]int{v, 1})
+		nodes[v] = append(nodes[v], [2]int{u, 1})
 	}
 
 	for i := 0; i < k; i++ {
 		s := r.ReadInt()
-		if n, ok := nodes[s]; ok {
-			n.s = true
-		}
+		// 世界線を切り替える
+		nodes[s] = append(nodes[s], [2]int{s + n, 0})
+		nodes[s+n] = append(nodes[s+n], [2]int{s, 0})
 	}
 
-	if _, ok := nodes[n]; !ok {
-		w.WriteInt(-1)
-		return
+	// 各頂点の最短を記録する
+	dist := make([]int, 2*n+1)
+	for i := 1; i < 2*n+1; i++ {
+		dist[i] = MaxInt
 	}
+	dist[1] = 0
 
-	ans := MaxInt
 	que := list.New()
-	que.PushBack([3]int{1, 0, 2})
-
+	que.PushBack(1)
 	for que.Len() > 0 {
-		v := que.Remove(que.Front()).([3]int)
-		nn := nodes[v[0]]
-		count := v[1] + 1
-		s := v[2]
-		for u, c := range nn.edges {
-			if c&s != s {
-				continue
-			}
-			nn.edges[u] -= s
-			nodes[u].edges[nn.vertex] -= s
-			if u == n {
-				ans = Min(ans, count)
-				break
-			}
-			que.PushBack([3]int{u, count, s})
-		}
-		if nn.s {
-			s ^= 3
-			for u, c := range nn.edges {
-				if c&s != s {
-					continue
+		v := que.Remove(que.Front()).(int)
+		edges := nodes[v]
+		for _, edge := range edges {
+			u, c := edge[0], edge[1]
+			if dist[u] > dist[v]+c {
+				dist[u] = dist[v] + c
+				// スイッチが押されたら、キューの最初におく
+				if c == 0 {
+					que.PushFront(u)
+				} else {
+					que.PushBack(u)
 				}
-				nn.edges[u] -= s
-				nodes[u].edges[nn.vertex] -= s
-				if u == n {
-					ans = Min(ans, count)
-					break
-				}
-				que.PushBack([3]int{u, count, s})
 			}
 		}
 	}
 
+	ans := Min(dist[n], dist[n*2])
 	if ans == MaxInt {
-		ans = -1
+		w.WriteInt(-1)
+	} else {
+		w.WriteInt(ans)
 	}
-
-	w.WriteInt(ans)
 }
 
 type reader struct {
