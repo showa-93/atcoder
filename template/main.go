@@ -80,13 +80,21 @@ func (w *writer) Flush() error {
 	return w.w.Flush()
 }
 
-func (w *writer) WriteString(s string) {
+func (w *writer) String(s string) {
 	w.w.WriteString(s)
-	w.w.WriteRune('\n')
+	w.Space()
 }
 
-func (w *writer) WriteInt(v int) {
+func (w *writer) Int(v int) {
 	w.w.WriteString(strconv.Itoa(v))
+	w.Space()
+}
+
+func (w *writer) Space() {
+	w.w.WriteString(" ")
+}
+
+func (w *writer) Cr() {
 	w.w.WriteRune('\n')
 }
 
