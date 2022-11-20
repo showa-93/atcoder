@@ -54,6 +54,57 @@ func solve(in io.Reader, out io.Writer) {
 	}
 }
 
+// DPで解法
+func solve2(in io.Reader, out io.Writer) {
+	r := NewReader(in)
+	w := NewWriter(out)
+	defer w.Flush()
+	n := r.ReadInt()
+	ss := make([][2]int, n)
+	for i := 0; i < n; i++ {
+		s := ([]rune)(r.Read())
+		ss[i] = [2]int{int(s[0]), int(s[len(s)-1])}
+	}
+
+	dp := make([][]bool, 1<<n)
+	for i := 0; i < 1<<n; i++ {
+		dp[i] = make([]bool, n)
+	}
+
+	for s := 1<<n - 1; s >= 0; s-- {
+		for i := 0; i < n; i++ {
+			// iがまだ未使用かチェック
+			if s>>i&1 == 1 {
+				continue
+			}
+			res := false
+			// 次に選ぶ文字j
+			for j := 0; j < n; j++ {
+				// jがまだ未使用かチェック
+				if i == j || s>>j&1 == 1 {
+					continue
+				}
+				// しりとりが"i→j"で成立
+				if ss[i][1] == ss[j][0] {
+					// iが使用済みの集合でjを選んだときの結果の反対の結果を格納
+					// 前回と逆の人物が勝つから不等号つける
+					res = res || !dp[s|1<<i][j]
+				}
+			}
+			dp[s][i] = res
+		}
+	}
+
+	for i := 0; i < n; i++ {
+		if !dp[0][i] {
+			w.String("First")
+			return
+		}
+	}
+
+	w.String("Second")
+}
+
 type reader struct {
 	s *bufio.Scanner
 }
@@ -116,6 +167,24 @@ func (w *writer) WriteString(s string) {
 
 func (w *writer) WriteInt(v int) {
 	w.w.WriteString(strconv.Itoa(v))
+	w.w.WriteRune('\n')
+}
+
+func (w *writer) String(s string) {
+	w.w.WriteString(s)
+	w.Space()
+}
+
+func (w *writer) Int(v int) {
+	w.w.WriteString(strconv.Itoa(v))
+	w.Space()
+}
+
+func (w *writer) Space() {
+	w.w.WriteString(" ")
+}
+
+func (w *writer) Cr() {
 	w.w.WriteRune('\n')
 }
 
