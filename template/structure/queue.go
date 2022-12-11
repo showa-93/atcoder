@@ -1,47 +1,59 @@
 package structure
 
-import "container/heap"
-
 type Item struct {
-	value    int
 	priority int
+	value    int
 	index    int
 }
 
-type PriorityQueue []*Item
+type PriorityQueue struct {
+	count int
+	items []*Item
+	less  func([]*Item, int, int) bool
+}
 
-func (pq PriorityQueue) Len() int { return len(pq) }
+func NewPriorityQueue(items []*Item, less func([]*Item, int, int) bool) *PriorityQueue {
+	return &PriorityQueue{
+		count: len(items),
+		items: items,
+		less:  less,
+	}
+}
+
+func (pq PriorityQueue) Len() int { return pq.count }
 
 func (pq PriorityQueue) Less(i, j int) bool {
-	// 優先度が大きい順に返す場合
-	return pq[i].priority > pq[j].priority
+	return pq.less(pq.items, i, j)
 }
 
 func (pq PriorityQueue) Swap(i, j int) {
-	pq[i], pq[j] = pq[j], pq[i]
-	pq[i].index = i
-	pq[j].index = j
+	pq.items[i], pq.items[j] = pq.items[j], pq.items[i]
+	pq.items[i].index = i
+	pq.items[j].index = j
 }
 
 func (pq *PriorityQueue) Push(x interface{}) {
-	n := len(*pq)
+	pq.count++
+	n := len(pq.items)
 	item := x.(*Item)
 	item.index = n
-	*pq = append(*pq, item)
+	pq.items = append(pq.items, item)
 }
 
 func (pq *PriorityQueue) Pop() interface{} {
-	old := *pq
+	pq.count--
+	old := pq.items
 	n := len(old)
 	item := old[n-1]
 	old[n-1] = nil
-	item.index = -1
-	*pq = old[0 : n-1]
+	pq.items = old[0 : n-1]
 	return item
 }
 
-func (pq *PriorityQueue) Update(item *Item, value, priority int) {
-	item.value = value
-	item.priority = priority
-	heap.Fix(pq, item.index)
+func Desc(items []*Item, i, j int) bool {
+	return items[i].priority > items[j].priority
+}
+
+func Asc(items []*Item, i, j int) bool {
+	return items[i].priority < items[j].priority
 }
