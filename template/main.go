@@ -162,3 +162,16 @@ func Abs(x int) int {
 
 	return x
 }
+
+func Pow(a, b int) int {
+	p := 1
+	for b > 0 {
+		if b&1 == 1 {
+			p *= a
+		}
+		a *= a
+		b >>= 1
+	}
+
+	return p
+}
