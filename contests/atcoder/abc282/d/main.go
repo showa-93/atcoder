@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"container/list"
 	"io"
 	"os"
 	"strconv"
@@ -21,86 +20,69 @@ func main() {
 
 func solve(in io.Reader, out io.Writer) {
 	r := NewReader(in)
-	w := NewWriter(out)
-	defer w.Flush()
-	N, m := r.ReadInt(), r.ReadInt()
-	type node struct {
-		n     int
-		c     int8
-		nodes []*node
+	ww := NewWriter(out)
+	defer ww.Flush()
+	n, m := r.ReadInt(), r.ReadInt()
+	color := make(map[int]int)
+	graph := make(map[int][]int)
+	for i := 0; i < m; i++ {
+		u, v := r.ReadInt(), r.ReadInt()
+		graph[u] = append(graph[u], v)
+		graph[v] = append(graph[v], u)
 	}
-	mm := make(map[int]*node)
-	if m == 0 {
-		var ans int
-		for i := 1; i < N; i++ {
-			ans += i
+
+	var dfs func(u, p int) (int, int)
+	// ある頂点が含まれる連結成分について白と黒の数をそれぞれ数える
+	dfs = func(u, p int) (black int, white int) {
+		if c, ok := color[p]; ok {
+			color[u] = -c
+		} else {
+			color[u] = 1
 		}
-		w.Int(ans)
+		if color[u] == 1 {
+			black++
+		} else {
+			white++
+		}
+
+		for _, v := range graph[u] {
+			if v == p || color[v] == -color[u] {
+				continue
+			}
+			if color[v] == color[u] {
+				return -1, -1
+			}
+			b, w := dfs(v, u)
+			if b == -1 {
+				return -1, -1
+			}
+			black += b
+			white += w
+		}
+
 		return
 	}
 
-	var f int
-	for i := 0; i < m; i++ {
-		u, v := r.ReadInt(), r.ReadInt()
-		f = u
-		if _, ok := mm[u]; !ok {
-			mm[u] = &node{n: u, nodes: make([]*node, 0)}
-		}
-		if _, ok := mm[v]; !ok {
-			mm[v] = &node{n: v, nodes: make([]*node, 0)}
-		}
-		mm[u].nodes = append(mm[u].nodes, mm[v])
-		mm[v].nodes = append(mm[v].nodes, mm[u])
-	}
-
-	black := 0
-	que := list.New()
-	que2 := list.New()
-	mm[f].c = 1
-	que2.PushBack(f)
-	for _, n := range mm[f].nodes {
-		que.PushBack(n.n)
-		n.c = mm[f].c * -1
-		black++
-	}
-	for que.Len() > 0 {
-		n := que.Remove(que.Back()).(int)
-		for _, nn := range mm[n].nodes {
-			if nn.c != 0 {
-				if mm[n].c == nn.c {
-					w.Int(0)
-					return
-				}
-			} else {
-				nn.c = mm[n].c * -1
-				if nn.c < 0 {
-					black++
-				} else {
-					que2.PushBack(nn.n)
-				}
-				que.PushBack(nn.n)
+	ans := n*(n-1)/2 - m
+	for u := 1; u <= n; u++ {
+		// 塗ったことない頂点について調べる
+		if _, ok := color[u]; !ok {
+			color[u] = 1
+			b, w := dfs(u, -1)
+			if b == -1 {
+				ww.Int(0)
+				return
 			}
+
+			// 結合部分でつくれる辺をを除いた辺の数が答えなので
+			// 白同士、黒同士の連結部分でつくれる辺を答えから引く
+			// ２部グラフである＝白同士、黒同士の辺はまだ存在しない
+			ans -= b * (b - 1) / 2
+			ans -= w * (w - 1) / 2
 		}
 	}
 
-	for i := 1; i <= N; i++ {
-		if _, ok := mm[i]; !ok {
-			black++
-		}
-	}
-	var ans int
-	for i := 1; i <= N; i++ {
-		if _, ok := mm[i]; !ok {
-			ans += black - 1
-		}
-	}
-
-	for que2.Len() > 0 {
-		n := que2.Remove(que2.Back()).(int)
-		ans += black - len(mm[n].nodes)
-	}
-
-	w.Int(ans)
+	ww.Int(ans)
 }
 
 type reader struct {
