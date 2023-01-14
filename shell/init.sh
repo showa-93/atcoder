@@ -13,11 +13,11 @@ else
   problem=$2
 fi
 
-readonly URL_ATCODER='^https://atcoder\.jp/contests/([a-z0-9]*)$'
+readonly URL_ATCODER='^https://atcoder\.jp/contests/([a-z0-9\-]*)$'
 
 if [[ $url =~ $URL_ATCODER ]] ; then
   contest_site=atcoder
-  contest_title=${BASH_REMATCH[1]}
+  contest_title=$(echo ${BASH_REMATCH[1]} | sed -e s/-/_/)
 else
   echo 対応していないURLです
   exit 1
