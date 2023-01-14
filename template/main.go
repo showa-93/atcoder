@@ -19,10 +19,10 @@ func main() {
 }
 
 func solve(in io.Reader, out io.Writer) {
-	r := NewReader(in)
-	w := NewWriter(out)
-	defer w.Flush()
-	r.ReadInt()
+	reader := NewReader(in)
+	writer := NewWriter(out)
+	defer writer.Flush()
+	reader.ReadInt()
 }
 
 type reader struct {
