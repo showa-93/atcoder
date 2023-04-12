@@ -18,6 +18,7 @@ func main() {
 	solve(os.Stdin, os.Stdout)
 }
 
+// 配るDP型
 func solve(in io.Reader, out io.Writer) {
 	reader := NewReader(in)
 	writer := NewWriter(out)
@@ -37,6 +38,28 @@ func solve(in io.Reader, out io.Writer) {
 		}
 	}
 	writer.Int(dp[h-1][w-1])
+}
+
+// もらうDP型
+func solve2(in io.Reader, out io.Writer) {
+	reader := NewReader(in)
+	writer := NewWriter(out)
+	defer writer.Flush()
+	h, w := reader.ReadInt(), reader.ReadInt()
+	c := reader.ReadLine(h)
+	dp := new2dInt(h+1, w+1, 0)
+	dp[1][0] = 1
+	for i := 1; i <= h; i++ {
+		for j := 1; j <= w; j++ {
+			ii, jj := i-1, j-1
+			if c[ii][jj] == '#' {
+				continue
+			}
+			dp[i][j] = dp[ii][j] + dp[i][jj]
+
+		}
+	}
+	writer.Int(dp[h][w])
 }
 
 type reader struct {
