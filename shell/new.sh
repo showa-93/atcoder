@@ -3,12 +3,18 @@
 # main.goのコピー、テストデータの取得を行う
 . shell/contests_function.sh
 
-if [ $# != 1 ]; then
-  echo 開始するコンテストの問題を指定してください
-  exit 1
-fi
-
-problem_url=`get_problem_url ${1}`
+case $# in
+  1)
+    problem_url=`get_problem_url ${1}`
+    ;;
+  2)
+    problem_url=`get_problem_url ${1} ${2}`
+    ;;
+  *)
+    echo 開始するコンテストの問題を指定してください
+    exit 1
+    ;;
+esac
 
 if [ -d testdata -o -e main.go ]; then
   # 間違ってさよならしないようにバックアップを取得する

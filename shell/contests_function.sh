@@ -12,11 +12,18 @@ function get_problem_url() {
   url=`get_current url`
   title=`get_current title`
 
-  if [ $# = 1 ]; then
-    problem=$1
-  else
-    problem=`get_current problem`
-  fi
+  case $# in
+    1)
+      problem=$1
+      ;;
+    2)
+      title=$1
+      problem=$2
+      ;;
+    *)
+      problem=`get_current problem`
+      ;;
+  esac
 
   if [ -z $site -o -z $url -o -z $title -o -z $problem ]; then
     echo $message

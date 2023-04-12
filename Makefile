@@ -1,3 +1,5 @@
+.PHONY: init test new solve save current
+
 init:
 	@./shell/init.sh
 
