@@ -14,11 +14,10 @@ function get_problem_url() {
 
   case $# in
     1)
-      problem=$1
+      problem="${title}_${1}"
       ;;
     2)
-      title=$1
-      problem=$2
+      problem="${1}_${2}"
       ;;
     *)
       problem=`get_current problem`
@@ -31,7 +30,7 @@ function get_problem_url() {
   fi
 
   if [ $site = atcoder ]; then
-    problem_url="${url}/tasks/${title}_${problem}"
+    problem_url="${url}/tasks/${problem}"
   else
     echo 未定義のサイトが指定されました。
     exit 1
@@ -42,13 +41,14 @@ function get_problem_url() {
 
 function get_problem_directory() {
   site=`get_current site`
-  title=`get_current title`
   problem=`get_current problem`
+  title=$(echo "$problem" | sed -E 's/^(.*)_([a-z0-9]){1,2}$/\1/')
+  problem_num=$(echo "$problem" | sed -E 's/^(.*)_([a-z0-9]){1,2}$/\2/')
 
   if [ -z $site -o -z $title -o -z $problem ]; then
     echo $message
     exit 1
   fi
 
-  echo "contests/${site}/${title}/${problem}"
+  echo "contests/${site}/${title}/${problem_num}"
 }

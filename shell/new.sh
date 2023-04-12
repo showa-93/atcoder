@@ -29,5 +29,14 @@ fi
 
 oj d -d testdata -f "case%i/%e" $problem_url
 cp template/main.go main.go
-echo -n $1 > .current/problem
+case $# in
+  1)
+    title=`get_current title`
+    echo -n ${title}_${1} > .current/problem
+    ;;
+  2)
+    echo -n ${1}_${2} > .current/problem
+    ;;
+esac
+
 go run cmd/solve_test/main.go
