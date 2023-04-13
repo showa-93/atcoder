@@ -12,7 +12,7 @@ if [ -z $site -o -z $url -o -z $title -o -z $problem ]; then
 fi
 
 if [ $site = atcoder ]; then
-  problem_url="${url}/tasks/${title}_${problem}"
+  problem_url="${url}/tasks/${problem}"
 fi
 
 echo 現在の問題：${problem_url}
