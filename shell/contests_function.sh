@@ -43,7 +43,7 @@ function get_problem_directory() {
   site=`get_current site`
   problem=`get_current problem`
   title=$(echo "$problem" | sed -E 's/^(.*)_([a-z0-9]){1,2}$/\1/')
-  problem_num=$(echo "$problem" | sed -E 's/^(.*)_([a-z0-9]){1,2}$/\2/')
+  problem_num=$(echo "$problem" | sed -E 's/^(.*)_([a-z0-9]{1,2})$/\2/')
 
   if [ -z $site -o -z $title -o -z $problem ]; then
     echo $message
