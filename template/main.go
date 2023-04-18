@@ -22,7 +22,7 @@ func solve(in io.Reader, out io.Writer) {
 	reader := NewReader(in)
 	writer := NewWriter(out)
 	defer writer.Flush()
-	reader.ReadInt()
+	reader.Int()
 }
 
 type reader struct {
@@ -38,30 +38,30 @@ func NewReader(r io.Reader) *reader {
 	}
 }
 
-func (r *reader) Read() string {
+func (r *reader) String() string {
 	r.s.Scan()
 	return r.s.Text()
 }
 
-func (r *reader) ReadInt() int {
+func (r *reader) Int() int {
 	r.s.Scan()
 	num, _ := strconv.Atoi(r.s.Text())
 
 	return num
 }
 
-func (r *reader) ReadLine(n int) []string {
+func (r *reader) StringList(n int) []string {
 	line := make([]string, n)
 	for i := 0; i < n; i++ {
-		line[i] = r.Read()
+		line[i] = r.String()
 	}
 	return line
 }
 
-func (r *reader) ReadIntLine(n int) []int {
+func (r *reader) IntList(n int) []int {
 	line := make([]int, n)
 	for i := 0; i < n; i++ {
-		line[i] = r.ReadInt()
+		line[i] = r.Int()
 	}
 	return line
 }
