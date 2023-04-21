@@ -175,3 +175,24 @@ func Pow(a, b int) int {
 
 	return p
 }
+
+func Factorial(a int) int {
+	v := 1
+	for i := 2; i <= a; i++ {
+		v *= i
+	}
+	return v
+}
+
+func Permutation(a, b int) int {
+	sum := 1
+	for i := a - b + 1; i <= a; i++ {
+		sum *= i
+	}
+
+	return sum
+}
+
+func Combination(a, b int) int {
+	return Permutation(a, b) / Factorial(b)
+}
