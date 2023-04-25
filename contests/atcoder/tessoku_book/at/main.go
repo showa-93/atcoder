@@ -3,6 +3,8 @@ package main
 import (
 	"bufio"
 	"io"
+	"math"
+	"math/rand"
 	"os"
 	"strconv"
 )
@@ -28,17 +30,36 @@ func solve(in io.Reader, out io.Writer) {
 		p[i] = [2]int{reader.Int(), reader.Int()}
 	}
 
+	ans := []int{0}
+
+	calcLength := func(a [2]int, b [2]int) float64 {
+		return math.Sqrt(float64(Pow(a[0]-b[0], 2) + Pow(a[1]-b[1], 2)))
+	}
+
+	calcScore := func() float64 {
+		var ret float64
+		for i := 1; i < len(ans); i++ {
+			ret += calcLength(p[ans[i-1]], p[ans[i]])
+		}
+
+		return ret
+	}
+
+	randInt := func(a, b int) int {
+		return a + rand.Intn(b-a+1)
+	}
+
+	// 山登り法（2-opt法）のための初期値を貪欲解で求める
 	var cur, min int
 	v := make([]bool, n)
 	v[0] = true
-	ans := []int{0}
 	for i := 1; i < n; i++ {
-		l := MaxInt
+		l := float64(10000000000)
 		for j := 1; j < n; j++ {
 			if v[j] {
 				continue
 			}
-			if ll := Pow(p[cur][0]-p[j][0], 2) + Pow(p[cur][1]-p[j][1], 2); l > ll {
+			if ll := calcLength(p[cur], p[j]); l > ll {
 				l = ll
 				min = j
 			}
@@ -49,11 +70,35 @@ func solve(in io.Reader, out io.Writer) {
 		ans = append(ans, cur)
 	}
 
+	ans = append(ans, 0)
+
+	// 2-opt法
+	score := calcScore()
+	for t := 0; t < 200000; t++ {
+		// ランダムに反転する場所を探す
+		l, r := randInt(1, n-1), randInt(1, n-1)
+		if l > r {
+			l, r = r, l
+		}
+
+		for i := 0; i <= (r-l)/2; i++ {
+			ans[l+i], ans[r-i] = ans[r-i], ans[l+i]
+		}
+
+		newScore := calcScore()
+		if newScore <= score {
+			score = newScore
+		} else {
+			for i := 0; i <= (r-l)/2; i++ {
+				ans[l+i], ans[r-i] = ans[r-i], ans[l+i]
+			}
+		}
+	}
+
 	for _, p := range ans {
 		writer.Int(p + 1)
 		writer.Cr()
 	}
-	writer.Int(1)
 }
 
 type reader struct {
