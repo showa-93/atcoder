@@ -30,7 +30,11 @@ func solve(in io.Reader, out io.Writer) {
 		p[i] = [2]int{reader.Int(), reader.Int()}
 	}
 
-	ans := []int{0}
+	ans := []int{}
+	for i := 0; i < n; i++ {
+		ans = append(ans, i)
+	}
+	ans = append(ans, 0)
 
 	calcLength := func(a [2]int, b [2]int) float64 {
 		return math.Sqrt(float64(Pow(a[0]-b[0], 2) + Pow(a[1]-b[1], 2)))
@@ -49,32 +53,9 @@ func solve(in io.Reader, out io.Writer) {
 		return a + rand.Intn(b-a+1)
 	}
 
-	// 山登り法（2-opt法）のための初期値を貪欲解で求める
-	var cur, min int
-	v := make([]bool, n)
-	v[0] = true
-	for i := 1; i < n; i++ {
-		l := float64(10000000000)
-		for j := 1; j < n; j++ {
-			if v[j] {
-				continue
-			}
-			if ll := calcLength(p[cur], p[j]); l > ll {
-				l = ll
-				min = j
-			}
-		}
-
-		cur = min
-		v[cur] = true
-		ans = append(ans, cur)
-	}
-
-	ans = append(ans, 0)
-
 	// 2-opt法
 	score := calcScore()
-	for t := 0; t < 200000; t++ {
+	for t := 1; t <= 200000; t++ {
 		// ランダムに反転する場所を探す
 		l, r := randInt(1, n-1), randInt(1, n-1)
 		if l > r {
@@ -86,7 +67,10 @@ func solve(in io.Reader, out io.Writer) {
 		}
 
 		newScore := calcScore()
-		if newScore <= score {
+		// 焼きなまし法による確率による変化を起こす
+		var T float64 = 30.0 - 28.0*float64(t)/200000.0
+		pro := math.Exp(math.Min(0.0, (score-newScore)/T))
+		if rand.Float64() < pro {
 			score = newScore
 		} else {
 			for i := 0; i <= (r-l)/2; i++ {
