@@ -80,22 +80,24 @@ func (w *writer) Flush() error {
 	return w.w.Flush()
 }
 
-func (w *writer) String(s string) {
+func (w *writer) String(s string) *writer {
 	w.w.WriteString(s)
-	w.Space()
+	return w
 }
 
-func (w *writer) Int(v int) {
+func (w *writer) Int(v int) *writer {
 	w.w.WriteString(strconv.Itoa(v))
-	w.Space()
+	return w
 }
 
-func (w *writer) Space() {
+func (w *writer) Space() *writer {
 	w.w.WriteString(" ")
+	return w
 }
 
-func (w *writer) Cr() {
+func (w *writer) Cr() *writer {
 	w.w.WriteRune('\n')
+	return w
 }
 
 func new1dInt(n, v int) []int {
