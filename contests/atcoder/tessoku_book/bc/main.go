@@ -23,25 +23,44 @@ func solve(in io.Reader, out io.Writer) {
 	writer := NewWriter(out)
 	defer writer.Flush()
 	q := reader.Int()
-	set := make(map[int]struct{})
+	cards := [5000][]int{}
+
 	for i := 0; i < q; i++ {
-		switch reader.String() {
+		query, x := reader.String(), reader.Int()
+		g := x / 200_000
+		switch query {
 		case "1":
-			set[reader.Int()] = struct{}{}
+			cards[g] = append(cards[g], x)
 		case "2":
-			delete(set, reader.Int())
-		case "3":
-			x := reader.Int()
-			min := MaxInt
-			for key := range set {
-				if x <= key {
-					min = Min(min, key)
+			index := -1
+			for i, v := range cards[g] {
+				if v == x {
+					index = i
 				}
 			}
-			if min == MaxInt {
-				min = -1
+			if index >= 0 {
+				n := len(cards[g]) - 1
+				cards[g][index], cards[g][n] = cards[g][n], cards[g][index]
+				cards[g] = cards[g][:n]
 			}
-			writer.Int(min).Cr()
+		case "3":
+			var v int = MaxInt
+			for i := g; i < 5000; i++ {
+				if len(cards[i]) > 0 {
+					for j := 0; j < len(cards[i]); j++ {
+						if cards[i][j] >= x {
+							v = Min(v, cards[i][j])
+						}
+					}
+					if v < MaxInt {
+						break
+					}
+				}
+			}
+			if v == MaxInt {
+				v = -1
+			}
+			writer.Int(v).Cr()
 		}
 	}
 }
