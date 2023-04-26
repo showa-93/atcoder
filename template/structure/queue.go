@@ -2,7 +2,6 @@ package structure
 
 type Item struct {
 	priority int
-	value    int
 	index    int
 }
 

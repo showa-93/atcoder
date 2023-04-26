@@ -15,5 +15,5 @@ solve:
 save:
 	@./shell/save.sh
 
-current:
+cur:
 	@./shell/current.sh
