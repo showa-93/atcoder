@@ -20,6 +20,14 @@ func TestRMQ(t *testing.T) {
 	assert.Equal(t, 1<<16, rmq.Query(10, 11))
 }
 
+func Min(x, y int) int {
+	if x < y {
+		return x
+	}
+
+	return y
+}
+
 func TestBIT(t *testing.T) {
 	a := []int{5, 3, 7, 9, 6, 4, 1, 2}
 	bit := &BIT{
