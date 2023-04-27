@@ -1,16 +1,17 @@
 package structure
 
-const MaxSize = 1 << 16
-
-// range minimum query
 type RMQ struct {
-	n   int
-	dst []int
+	n      int
+	size   int
+	dst    []int
+	minmax func(int, int) int
 }
 
-func NewRMQ(n int) *RMQ {
+func NewRMQ(n int, size int, minmax func(int, int) int) *RMQ {
 	rmq := &RMQ{
-		n: 1,
+		n:      1,
+		size:   size,
+		minmax: minmax,
 	}
 
 	// 完全２分木になるようにnの値を計算する
@@ -19,31 +20,31 @@ func NewRMQ(n int) *RMQ {
 	}
 	rmq.dst = make([]int, 2*rmq.n-1)
 	for i := 0; i < len(rmq.dst); i++ {
-		rmq.dst[i] = MaxSize
+		rmq.dst[i] = rmq.size
 	}
 
 	return rmq
 }
 
-func (r *RMQ) Update(k, a int) {
+func (rmq *RMQ) Update(k, a int) {
 	// 葉にあたる値は後ろn個の値を更新する
-	k += r.n - 1
-	r.dst[k] = a
+	k += rmq.n - 1
+	rmq.dst[k] = a
 	// セグメント木の葉側から順番に頂点に向かって更新する
 	for k > 0 {
 		k = (k - 1) / 2
-		r.dst[k] = Min(r.dst[2*k+1], r.dst[2*k+2])
+		rmq.dst[k] = rmq.minmax(rmq.dst[2*k+1], rmq.dst[2*k+2])
 	}
 }
 
-func (r *RMQ) Query(a, b int) int {
-	return r.query(a, b, 0, 0, r.n)
+func (rmq *RMQ) Query(a, b int) int {
+	return rmq.query(a, b, 0, 0, rmq.n)
 }
 
 func (rmq *RMQ) query(a, b, k, l, r int) int {
 	// a, bの完全に範囲外の場合、存在しない
 	if r <= a || b <= l {
-		return MaxSize
+		return rmq.size
 	}
 
 	// 範囲内の場合現在地が最小なのでそれを返す
@@ -55,7 +56,7 @@ func (rmq *RMQ) query(a, b, k, l, r int) int {
 	vl := rmq.query(a, b, k*2+1, l, (l+r)/2)
 	vr := rmq.query(a, b, k*2+2, (l+r)/2, r)
 
-	return Min(vl, vr)
+	return rmq.minmax(vl, vr)
 }
 
 func Min(x, y int) int {
