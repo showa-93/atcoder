@@ -21,6 +21,8 @@ func NewPriorityQueue(items []*Item, less func([]*Item, int, int) bool) *Priorit
 
 func (pq PriorityQueue) Len() int { return pq.count }
 
+func (pq PriorityQueue) Empty() bool { return pq.count == 0 }
+
 func (pq PriorityQueue) Less(i, j int) bool {
 	return pq.less(pq.items, i, j)
 }
