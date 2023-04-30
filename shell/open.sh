@@ -15,4 +15,5 @@ if [ $site = atcoder ]; then
   problem_url="${url}/tasks/${problem}"
 fi
 
-echo 現在の問題：${problem_url}
+echo 問題文のページを開くですます
+explorer.exe ${problem_url}
