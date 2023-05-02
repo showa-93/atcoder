@@ -3,7 +3,7 @@
 ```bash
 make init https://atcoder.jp/contests/abc267
 # 引数なしの場合、コンテストのURLを入力する
-# make init
+# make init or make
 ```
 
 サンプルデータでテストをおこなう
@@ -29,9 +29,9 @@ make save
 make new-b
 ```
 
-今解いている問題を表示する
+今解いている問題をブラウザで表示する
 ```bash
-make current
+make open
 ```
 
 TODO:
