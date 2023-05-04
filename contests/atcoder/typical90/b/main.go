@@ -27,7 +27,14 @@ func solve(in io.Reader, out io.Writer) {
 	if n%2 == 1 {
 		return
 	}
-
+	if n == 2 {
+		writer.String("()")
+		return
+	}
+	a := make([]int, n)
+	for i := n / 2; i < n; i++ {
+		a[i] = 1
+	}
 	valid := func(s string) bool {
 		var score int
 		for _, c := range s {
@@ -36,6 +43,7 @@ func solve(in io.Reader, out io.Writer) {
 			} else {
 				score--
 			}
+
 			if score < 0 {
 				return false
 			}
@@ -45,9 +53,9 @@ func solve(in io.Reader, out io.Writer) {
 	}
 
 	var sb strings.Builder
-	for b := 0; b < (1 << n); b++ {
-		for i := n - 1; i >= 0; i-- {
-			if b&(1<<i) == 0 {
+	for {
+		for _, i := range a {
+			if i == 0 {
 				sb.WriteRune('(')
 			} else {
 				sb.WriteRune(')')
@@ -57,7 +65,42 @@ func solve(in io.Reader, out io.Writer) {
 			writer.String(s).Cr()
 		}
 		sb.Reset()
+		if !NextPermutation(a) {
+			return
+		}
 	}
+}
+
+func NextPermutation(list []int) bool {
+	if len(list) <= 2 {
+		return false
+	}
+
+	var i int
+	for i = len(list) - 2; i >= 0; i-- {
+		if list[i] < list[i+1] {
+			break
+		}
+	}
+
+	if i < 0 {
+		return false
+	}
+
+	var j int
+	for j = len(list) - 1; j >= i; j-- {
+		if list[i] < list[j] {
+			break
+		}
+	}
+
+	list[i], list[j] = list[j], list[i]
+
+	for p, q := i+1, len(list)-1; p < q; p, q = p+1, q-1 {
+		list[p], list[q] = list[q], list[p]
+	}
+
+	return true
 }
 
 type reader struct {
