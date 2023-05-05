@@ -24,19 +24,29 @@ func solve(in io.Reader, out io.Writer) {
 	writer := NewWriter(out)
 	defer writer.Flush()
 	n, k, s := reader.Int(), reader.Int(), reader.String()
+
+	// n文字目以降で文字iが最初に登場するindexをもつ配列
+	// この前処理で後続の探索がO(1)になる
+	nex := make([][26]int, n+1)
+	for i := 0; i < 26; i++ {
+		nex[n][i] = n
+	}
+	for i := n - 1; i >= 0; i-- {
+		nex[i] = nex[i+1]
+		nex[i][s[i]-'a'] = i
+	}
+
 	var sb strings.Builder
-	prev := 0
-	for i := 1; i <= k; i++ {
-		mc := int('{')
-		var cur int
-		for j, c := range s[prev : n-k+i] {
-			if mc > int(c) {
-				mc = int(c)
-				cur = j
+	var j int = -1
+	for i := 0; i < k; i++ {
+		for c := 0; c < 26; c++ {
+			v := nex[j+1][c]
+			if n-k+i >= v {
+				sb.WriteRune(rune('a' + c))
+				j = v
+				break
 			}
 		}
-		prev += cur + 1
-		sb.WriteRune(rune(mc))
 	}
 
 	writer.String(sb.String())
