@@ -17,3 +17,4 @@ fi
 
 echo 問題文のページを開くですます
 explorer.exe ${problem_url}
+exit 0
