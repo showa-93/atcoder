@@ -1,4 +1,4 @@
-package structure
+package algorithm
 
 import (
 	"index/suffixarray"

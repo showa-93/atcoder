@@ -1,4 +1,4 @@
-package prepare
+package algorithm
 
 // a-zの範囲の文字列辞書順検索で使える前処理
 // n文字目以降で文字iが最初に登場するindexをもつ配列

@@ -1,5 +1,5 @@
 // 互いに素な集合を管理するデータ構造
-package structure
+package algorithm
 
 type DijointSetsForests struct {
 	parent []int

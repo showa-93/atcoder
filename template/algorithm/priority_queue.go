@@ -1,4 +1,4 @@
-package structure
+package algorithm
 
 type Item struct {
 	priority int

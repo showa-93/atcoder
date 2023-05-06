@@ -16,13 +16,18 @@ const mainFile = "main.go"
 
 var (
 	targetPaths = map[string]string{
-		"alg":    "template/algorithm/algorithm.go",
-		"mod":    "template/algorithm/mod.go",
-		"number": "template/algorithm/number_theory.go",
-		"perm":   "template/algorithm/permuration.go",
-		"ds":     "template/structure/dijoint_sets.go",
-		"que":    "template/structure/queue.go",
-		"sa":     "template/structure/suffix_array.go",
+		"mod":   "template/algorithm/mod.go",
+		"bs":    "template/algorithm/binary_search.go",
+		"prime": "template/algorithm/prime.go",
+		"pq":    "template/algorithm/priority_queue.go",
+		"next":  "template/algorithm/next.go",
+		"flow":  "template/algorithm/maxflow.go",
+		"per":   "template/algorithm/permuration.go",
+		"ds":    "template/algorithm/dijoint_sets.go",
+		"gcd":   "template/algorithm/gcd.go",
+		"rmq":   "template/algorithm/segmenttree/rmq.go",
+		"rsq":   "template/algorithm/segmenttree/rsq.go",
+		"bit":   "template/algorithm/segmenttree/bit.go",
 	}
 )
 
@@ -30,8 +35,15 @@ func main() {
 	flag.Parse()
 	targets := flag.Args()
 	if len(targets) == 0 {
-		fmt.Println("引数にmain.goに追加するtemplateを指定してください")
+		fmt.Println("引数にmain.goに追加するターゲットを指定してください。listで一覧を表示します。")
 		os.Exit(1)
+	}
+	if targets[0] == "list" {
+		fmt.Println("指定可能なターゲットの一覧")
+		for target, path := range targetPaths {
+			fmt.Println(target, "=", path)
+		}
+		return
 	}
 
 	fileMap, err := readFiles(append([]string{mainFile}, targets...))

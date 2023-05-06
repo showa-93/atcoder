@@ -1,4 +1,4 @@
-package structure
+package algorithm
 
 // 残余グラフの辺
 type ResidualEdge struct {

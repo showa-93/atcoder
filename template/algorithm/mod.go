@@ -9,7 +9,7 @@ func SetModValue(v int) {
 	mod = v
 }
 
-var mod int = mod1000000007
+var mod int = mod998244353
 
 func Mod(a int) int {
 	a %= mod

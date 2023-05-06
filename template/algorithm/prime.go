@@ -56,39 +56,3 @@ func IsPrime(x int) bool {
 
 	return true
 }
-
-// 最大公約数
-func GCD(x, y int) int {
-	if x < y {
-		x, y = y, x
-	}
-
-	for y > 0 {
-		// もとのx,yの最大公約数と割ったあまりとyの最大公約数と一致する
-		// yがゼロになるまで繰り返す
-		r := x % y
-		x, y = y, r
-	}
-
-	return x
-}
-
-// Mで割ったあまりを求めるような場合に利用する
-// 大きな値を扱うときに計算途中で余りを使える
-const M = 1000000007
-
-// べき乗
-func Pow(x, n int) int {
-	if n == 0 {
-		return 1
-	}
-
-	ans := Pow(x*x%M, n/2)
-
-	// 奇数のとき１回掛ける
-	if n%2 == 1 {
-		ans *= x % M
-	}
-
-	return ans
-}
