@@ -27,11 +27,16 @@ func solve(in io.Reader, out io.Writer) {
 	a := reader.IntList(3)
 	sort.Slice(a, func(i, j int) bool { return a[i] > a[j] })
 
-	var ans int = MaxInt
-	for i := 0; i <= n/a[0]; i++ {
+	imax := Min(n/a[0], 9999)
+	jmax := Min(n/a[1], 9999)
+	var ans int = 10000
+	for i := 0; i <= imax; i++ {
 		aa := a[0] * i
-		for j := 0; j <= n/a[1]; j++ {
+		for j := 0; j <= Min(jmax, 9999-i); j++ {
 			v := aa + a[1]*j
+			if v > 1_000_000_000 {
+				break
+			}
 			vv := n - v
 			if vv >= 0 && (vv)%a[2] == 0 {
 				ans = Min(ans, i+j+(vv)/a[2])
