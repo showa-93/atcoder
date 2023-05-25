@@ -50,6 +50,13 @@ func (r *reader) Int() int {
 	return num
 }
 
+func (r *reader) Float64() float64 {
+	r.s.Scan()
+	num, _ := strconv.ParseFloat(r.s.Text(), 64)
+
+	return num
+}
+
 func (r *reader) StringList(n int) []string {
 	line := make([]string, n)
 	for i := 0; i < n; i++ {
@@ -87,6 +94,11 @@ func (w *writer) String(s string) *writer {
 
 func (w *writer) Int(v int) *writer {
 	w.w.WriteString(strconv.Itoa(v))
+	return w
+}
+
+func (w *writer) Float64(v float64) *writer {
+	w.w.WriteString(strconv.FormatFloat(v, 'f', 10, 64))
 	return w
 }
 
