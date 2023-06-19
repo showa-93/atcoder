@@ -84,24 +84,25 @@ func TestSolveSimple_Case{{ $num }}(t *testing.T) {
 {{ printf "" }}
 {{- end }}
 
-func TestRandom(t *testing.T) {
-	b := testhelper.NewRandomTestBuilder()
+func BenchmarkSolve_Random(b *testing.B) {
+	tb := testhelper.NewRandomTestBuilder()
 
-	os.RemoveAll("testdata/random")
-	input := b.Build()
-	out1 := bytes.NewBuffer(make([]byte, 0))
-	SolveSimple(strings.NewReader(input), out1)
-	result1, _ := io.ReadAll(out1)
+	for i := 0; i < b.N; i++ {
+		input := tb.Build()
+		out1 := bytes.NewBuffer(make([]byte, 0))
+		SolveSimple(strings.NewReader(input), out1)
+		result1, _ := io.ReadAll(out1)
 
-	out2 := bytes.NewBuffer(make([]byte, 0))
-	solve(strings.NewReader(input), out2)
-	result2, _ := io.ReadAll(out2)
-	if diff := cmp.Diff(string(result1), string(result2)); diff != "" {
-		t.Error(diff)
-		os.MkdirAll("testdata/random", 0777)
-		os.WriteFile("testdata/random/in", []byte(input), 0644)
-		os.WriteFile("testdata/random/out", result1, 0644)
-		os.WriteFile("testdata/random/result.csv", result2, 0644)
+		out2 := bytes.NewBuffer(make([]byte, 0))
+		solve(strings.NewReader(input), out2)
+		result2, _ := io.ReadAll(out2)
+		if diff := cmp.Diff(string(result1), string(result2)); diff != "" {
+			os.MkdirAll("testdata/random", 0777)
+			os.WriteFile("testdata/random/in", []byte(input), 0644)
+			os.WriteFile("testdata/random/out", result1, 0644)
+			os.WriteFile("testdata/random_result.csv", result2, 0644)
+			b.Fatal(diff)
+		}
 	}
 }`
 
