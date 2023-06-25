@@ -32,12 +32,23 @@ func (b *RandomTestBuilder) AddIntKey(key string, from, to interface{}) {
 		if from2 >= to2 {
 			panic(`arguments must set "from < to"`)
 		}
-		return strconv.Itoa(rand.Intn(to2-from2+1) + from2)
+		return strconv.Itoa(rand.Intn(to2-from2) + from2)
+	}
+}
+
+func (b *RandomTestBuilder) AddString(key string, length interface{}, runes []rune) {
+	rand.Seed(time.Now().UnixMicro())
+	b.buildFuncMap[key] = func() string {
+		var sb strings.Builder
+		for i := 0; i < b.convertInt(length); i++ {
+			sb.WriteRune(runes[rand.Intn(len(runes))])
+		}
+		return sb.String()
 	}
 }
 
 func (b *RandomTestBuilder) AddBuildOrder(count interface{}, keys []string) {
-	builderKey := strings.Join(keys, " ")
+	builderKey := "build_order" + strings.Join(keys, " ")
 	b.buildFuncMap[builderKey] = func() string {
 		n := b.convertInt(count)
 		lines := make([]string, 0, n)
